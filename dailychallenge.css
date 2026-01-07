@@ -1,0 +1,88 @@
+/* Import theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+  color: #fff;
+  padding: 15px 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.logo { font-size: 1.6rem; font-weight: 700; }
+
+.xp-section { display: flex; align-items: center; gap: 10px; }
+.xp-label { font-weight: 600; }
+
+.xp-bar {
+  width: 160px; height: 12px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px; overflow: hidden;
+}
+#xp-progress {
+  height: 100%; background: #22c55e;
+  transition: width 0.4s ease;
+}
+
+.profile { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; }
+.profile-text p { margin: 0; font-weight: 600; }
+.profile-text small { font-size: 0.8rem; color: #e2e8f0; }
+
+#logout-btn {
+  background: #ef4444; color: white; border: none;
+  padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  transition: background 0.3s;
+}
+#logout-btn:hover { background: #dc2626; }
+
+/* ===== Sections ===== */
+.challenge, .noticeboard {
+  margin: 25px; padding: 20px;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+}
+
+.challenge h2, .noticeboard h2 {
+  color: #1e3a8a; margin-top: 0;
+}
+
+#challenge-answer {
+  width: 100%; padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #cbd5e1; border-radius: 8px;
+  font-size: 1rem;
+}
+
+.btn {
+  margin-top: 12px;
+  background: #2563eb; color: #fff; border: none;
+  padding: 10px 16px; border-radius: 8px; cursor: pointer;
+  transition: background 0.3s;
+}
+.btn:hover { background: #1e40af; }
+
+#challenge-feedback {
+  margin-top: 10px;
+  font-weight: 600;
+}
+
+.noticeboard ul {
+  list-style: none; padding: 0;
+}
+.noticeboard li {
+  padding: 8px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.noticeboard li:last-child { border-bottom: none; }

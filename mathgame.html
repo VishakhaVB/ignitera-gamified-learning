@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Gamified Math Quest</title>
+  <link rel="stylesheet" href="mathgame.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">Math Quest</div>
+    <div class="xp-section">
+      <span class="xp-label">XP</span>
+      <div class="xp-bar"><div id="xp-progress"></div></div>
+    </div>
+    <div class="profile">
+      <img src="https://i.pravatar.cc/42" class="avatar" alt="profile">
+      <div class="profile-text">
+        <p>Player</p>
+        <small id="level-display">Level 1</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Game Container -->
+  <div class="game-container" id="game-container">
+    <h2 id="level-title">Level 1: Easy</h2>
+    <p id="question">Loading question...</p>
+
+    <div class="options" id="options"></div>
+
+    <div class="status">
+      <p id="feedback"></p>
+      <p id="timer">⏳ Time Left: <span id="time">15</span>s</p>
+    </div>
+
+    <button class="btn" id="next-btn" disabled>Next Question</button>
+  </div>
+
+  <!-- Game Over -->
+  <div class="game-over hidden" id="game-over">
+    <h2>🎉 Congratulations!</h2>
+    <p>You completed all levels!</p>
+    <button class="btn" onclick="restartGame()">Play Again</button>
+  </div>
+
+  <script src="mathgame.js"></script>
+</body>
+</html>

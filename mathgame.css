@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+  background: #f8fafc;
+  color: #1e293b;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+  color: #fff;
+  padding: 15px 30px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+.logo { font-size: 1.6rem; font-weight: 700; }
+.xp-section { display: flex; align-items: center; gap: 10px; }
+.xp-bar { width: 160px; height: 12px; background: rgba(255,255,255,0.2); border-radius: 8px; overflow: hidden; }
+#xp-progress { height: 100%; background: #22c55e; transition: width 0.4s ease; }
+.profile { display: flex; align-items: center; gap: 12px; }
+.avatar { width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; }
+.profile-text p { margin: 0; font-weight: 600; }
+.profile-text small { font-size: 0.8rem; color: #e2e8f0; }
+
+/* Game Container */
+.game-container {
+  max-width: 600px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+  text-align: center;
+  animation: fadeIn 0.6s ease;
+}
+#question { font-size: 1.2rem; margin: 15px 0; }
+.options { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 20px 0; }
+.option-btn {
+  flex: 1 1 40%;
+  background: #e0f2fe;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+.option-btn:hover { background: #bae6fd; transform: scale(1.05); }
+.option-btn.correct { background: #22c55e; color: #fff; }
+.option-btn.wrong { background: #ef4444; color: #fff; }
+
+.status { margin-top: 15px; }
+#feedback { font-weight: 600; }
+#timer { font-size: 0.95rem; color: #475569; }
+
+.btn {
+  background: #2563eb; color: #fff; border: none;
+  padding: 10px 18px; border-radius: 8px; cursor: pointer;
+  transition: background 0.3s;
+}
+.btn:hover { background: #1e40af; }
+
+/* Game Over */
+.game-over {
+  text-align: center;
+  max-width: 600px;
+  margin: 60px auto;
+  background: #dcfce7;
+  padding: 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+.hidden { display: none; }
+
+@keyframes fadeIn { from {opacity:0; transform: translateY(15px);} to {opacity:1; transform: translateY(0);} }

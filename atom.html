@@ -1,0 +1,477 @@
+<!-- Save as physics-elements-game.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Elements Catcher — STEM Game</title>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+ <style>
+  :root{
+    --bg:#f7fafc;
+    --card:#ffffff;
+    --primary:#1e40af;
+    --accent:#06b6d4;
+    --success:#16a34a;
+    --danger:#ef4444;
+    --muted:#64748b;
+    --glass: rgba(255,255,255,0.8);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;
+    background: linear-gradient(180deg,#f8fafc 0%, #eef2ff 100%);
+    color:#0f172a;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+
+  .wrap{
+    width:100%;
+    max-width:1080px;
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(16,24,40,0.08);
+    overflow:hidden;
+    display:grid;
+    grid-template-columns: 320px 1fr;
+    min-height:560px;
+    animation: fadeIn 0.8s ease;
+  }
+
+  /* Left panel (info + controls) */
+  .panel{
+    padding:22px;
+    background: linear-gradient(180deg, rgba(14,165,233,0.03), rgba(99,102,241,0.02));
+    border-right:1px solid rgba(15,23,42,0.03);
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  .brand{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .logo {
+    width:46px;
+    height:46px;
+    border-radius:10px;
+    background:linear-gradient(135deg,var(--primary),var(--accent));
+    display:flex;align-items:center;justify-content:center;color:white;font-weight:800;
+    box-shadow:0 4px 14px rgba(14,165,233,0.12);
+    font-size:20px;
+    animation: pulse 2s infinite;
+  }
+  .brand h1{font-size:18px;margin:0}
+  .brand p{margin:0;color:var(--muted);font-size:13px}
+
+  .stats{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  .stat{
+    background:var(--glass);
+    padding:12px;border-radius:12px;
+    box-shadow:0 6px 18px rgba(2,6,23,0.03);
+    transition: transform 0.3s;
+  }
+  .stat:hover { transform: scale(1.05); }
+  .stat small{display:block;color:var(--muted);font-size:12px}
+  .stat strong{display:block;font-size:20px;margin-top:6px}
+
+  .targetBox{
+    margin-top:6px;
+    padding:12px;border-radius:12px;background:#fff;border:2px dashed rgba(15,23,42,0.06);
+    animation: glow 2s infinite alternate;
+  }
+  .targetLabel{font-size:13px;color:var(--muted)}
+  .targetName{font-weight:700;font-size:20px;margin-top:6px;color:var(--primary)}
+
+  .controls{margin-top:auto;display:flex;gap:10px;flex-direction:column}
+  .btn{
+    border:0;padding:12px 14px;border-radius:10px;font-weight:600;cursor:pointer;
+    background:linear-gradient(90deg,var(--primary),#4f46e5);color:white;
+    box-shadow:0 8px 20px rgba(99,102,241,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .btn:hover{ transform: translateY(-3px); box-shadow:0 12px 22px rgba(99,102,241,0.25); }
+  .btn.secondary{
+    background:transparent;color:var(--primary);border:1px solid rgba(30,64,175,0.12);
+    box-shadow:none;font-weight:600;
+  }
+  .small{
+    font-size:13px;color:var(--muted);
+    background:transparent;border-radius:8px;padding:8px;
+  }
+
+  /* Right panel (canvas area + game info) */
+  .stage{
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .headerRow{display:flex;justify-content:space-between;align-items:center;gap:12px}
+  .headerRow h2{margin:0;font-size:20px}
+  .headerRow p{margin:0;color:var(--muted);font-size:13px}
+
+  .canvasWrap{
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:12px;
+    background: linear-gradient(180deg,#ffffff, #fbfdff);
+    border:1px solid rgba(2,6,23,0.03);
+    position:relative;
+    overflow:hidden;
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+  }
+  .canvasWrap:hover { transform: scale(1.01); }
+
+  canvas{
+    width:100%;
+    height:100%;
+    max-width:1000px;
+    max-height:520px;
+    display:block;
+  }
+
+  .legend{
+    display:flex;gap:10px;align-items:center;color:var(--muted);font-size:13px;
+  }
+  .badge{display:inline-flex;padding:6px 10px;border-radius:999px;background:#f1f5f9;color:#0f172a;font-weight:700}
+
+  .footerNote{font-size:12px;color:var(--muted);margin-top:8px}
+
+  /* Floating XP / Feedback */
+  .floating-text {
+    position: absolute;
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--success);
+    animation: floatUp 1s ease forwards;
+  }
+  .floating-text.wrong { color: var(--danger); }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity:0; transform:translateY(20px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+  @keyframes glow {
+    from { box-shadow:0 0 6px var(--accent); }
+    to { box-shadow:0 0 18px var(--primary); }
+  }
+  @keyframes pulse {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.1); }
+  }
+  @keyframes floatUp {
+    0% { transform:translateY(0); opacity:1; }
+    100% { transform:translateY(-40px); opacity:0; }
+  }
+</style>
+
+</head>
+<body>
+
+  <div class="wrap" role="application" aria-label="Elements Catcher game">
+    <!-- left panel -->
+    <aside class="panel" aria-hidden="false">
+      <div class="brand">
+        <div class="logo">E</div>
+        <div>
+          <h1>Elements Catcher</h1>
+          <p>Match the chemical symbol shown to the falling tiles</p>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <small>Score</small>
+          <strong id="score">0</strong>
+        </div>
+        <div class="stat">
+          <small>Lives</small>
+          <strong id="lives">3</strong>
+        </div>
+        <div class="stat">
+          <small>Level</small>
+          <strong id="level">1</strong>
+        </div>
+        <div class="stat">
+          <small>High Score</small>
+          <strong id="highscore">0</strong>
+        </div>
+      </div>
+
+      <div class="targetBox" aria-live="polite">
+        <div class="targetLabel">Target element</div>
+        <div class="targetName" id="targetName">—</div>
+        <div style="margin-top:8px;color:var(--muted);font-size:13px">Click the falling tile whose symbol matches the target</div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <button class="btn" id="startBtn">Start Game</button>
+        <button class="btn secondary" id="resetBtn">Reset</button>
+      </div>
+
+      <div class="controls">
+        <div class="small">Difficulty: <select id="difficulty" style="margin-left:8px;padding:6px;border-radius:8px;border:1px solid #e6eef8">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+        </select></div>
+
+        <div>
+          <label class="small"><input type="checkbox" id="soundToggle" checked> Sound</label>
+        </div>
+
+        <div class="footerNote">Tip: If a correct tile reaches the bottom, you lose a life. Good luck!</div>
+      </div>
+    </aside>
+
+    <!-- right stage -->
+    <main class="stage">
+      <div class="headerRow">
+        <h2>Forces & Elements — Mini Game</h2>
+        <p class="legend"><span class="badge">XP</span> Earn XP on correct matches</p>
+      </div>
+
+      <div class="canvasWrap" id="canvasWrap">
+        <!-- Canvas will be appended here by JS -->
+      </div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div style="color:var(--muted);font-size:13px">Click tiles to select them. Complete levels to increase speed.</div>
+        <div id="statusMsg" style="font-weight:600;color:var(--muted)"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+(function(){
+  const ELEMENTS = [
+    {name:'Hydrogen', sym:'H'},
+    {name:'Helium', sym:'He'},
+    {name:'Carbon', sym:'C'},
+    {name:'Nitrogen', sym:'N'},
+    {name:'Oxygen', sym:'O'},
+    {name:'Sodium', sym:'Na'},
+    {name:'Magnesium', sym:'Mg'},
+    {name:'Aluminium', sym:'Al'},
+    {name:'Silicon', sym:'Si'},
+    {name:'Phosphorus', sym:'P'},
+    {name:'Sulfur', sym:'S'},
+    {name:'Chlorine', sym:'Cl'},
+    {name:'Potassium', sym:'K'},
+    {name:'Calcium', sym:'Ca'},
+    {name:'Iron', sym:'Fe'},
+    {name:'Copper', sym:'Cu'},
+    {name:'Zinc', sym:'Zn'},
+    {name:'Silver', sym:'Ag'},
+    {name:'Gold', sym:'Au'}
+  ];
+
+  const startBtn = document.getElementById('startBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const difficultySel = document.getElementById('difficulty');
+  const soundToggle = document.getElementById('soundToggle');
+  const scoreEl = document.getElementById('score');
+  const livesEl = document.getElementById('lives');
+  const levelEl = document.getElementById('level');
+  const targetNameEl = document.getElementById('targetName');
+  const highscoreEl = document.getElementById('highscore');
+  const statusMsg = document.getElementById('statusMsg');
+  const canvasWrap = document.getElementById('canvasWrap');
+
+  let canvas, ctx, W=900, H=520;
+  let running=false, elements=[], target=null;
+  let score=0, lives=3, level=1;
+  let spawnTimer=0, spawnRate=80, gravity=1.0;
+  let animationId;
+  let highscore = Number(localStorage.getItem('elements_highscore')||0);
+  highscoreEl.textContent = highscore;
+
+  // --- Sounds ---
+  const audioCtx = (window.AudioContext||window.webkitAudioContext) ? new (window.AudioContext||window.webkitAudioContext)() : null;
+  function playBeep(freq=440, dur=0.2, vol=0.5){
+    if(!audioCtx || !soundToggle.checked) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+    gain.gain.value = vol;
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    setTimeout(()=>osc.stop(), dur*1000);
+  }
+  function successSound(){ playBeep(800,0.15,0.5); }
+  function errorSound(){ playBeep(180,0.25,0.6); }
+  function levelUpSound(){ playBeep(1000,0.25,0.6); playBeep(1300,0.2,0.5); }
+  function gameOverSound(){ playBeep(100,0.5,0.7); }
+
+  // --- Floating messages ---
+  let floatTexts=[];
+  function addFloatText(text,x,y,color="#16a34a"){
+    floatTexts.push({text,x,y,alpha:1,color});
+  }
+  function drawFloatTexts(){
+    for(let i=floatTexts.length-1;i>=0;i--){
+      const ft=floatTexts[i];
+      ctx.globalAlpha=ft.alpha;
+      ctx.fillStyle=ft.color;
+      ctx.font="16px Inter,sans-serif";
+      ctx.fillText(ft.text,ft.x,ft.y);
+      ctx.globalAlpha=1;
+      ft.y-=0.7; ft.alpha-=0.015;
+      if(ft.alpha<=0) floatTexts.splice(i,1);
+    }
+  }
+
+  // --- Utilities ---
+  function pickRandom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+  function newTarget(){
+  target = pickRandom(ELEMENTS);
+  // Show ONLY the name (not the symbol)
+  targetNameEl.textContent = target.name;
+  statusMsg.textContent = `Catch only: ${target.name}!`;
+}
+    
+  function createTile(sym){
+    const w=100,h=80,x=Math.random()*(W-w-40)+20,y=-h-50;
+    const speed=gravity+Math.random()*1.2+level*0.3;
+    return {x,y,w,h,sym,speed};
+  }
+  function updateUI(){ scoreEl.textContent=score; livesEl.textContent=lives; levelEl.textContent=level; }
+
+  // --- Game Flow ---
+  function startGame(){
+    if(running) return;
+    score=0; lives=3; level=1; gravity=1.0; elements=[]; spawnTimer=0;
+    ensureCanvas();
+    running=true; newTarget();
+    updateUI();
+    startBtn.textContent="Playing...";
+    startBtn.disabled=true;
+    animationId=requestAnimationFrame(loop);
+    statusMsg.textContent="Game started! Click the correct element!";
+  }
+  function resetGame(){
+    running=false; cancelAnimationFrame(animationId);
+    elements=[]; ctx && ctx.clearRect(0,0,W,H);
+    score=0; lives=3; level=1;
+    startBtn.textContent="Start Game"; startBtn.disabled=false;
+    statusMsg.textContent="Game reset.";
+    updateUI();
+  }
+  function gameOver(){
+    running=false; cancelAnimationFrame(animationId);
+    startBtn.textContent="Start Game"; startBtn.disabled=false;
+    statusMsg.textContent="Game Over! Final Score: "+score;
+    gameOverSound();
+    if(score>highscore){ highscore=score; localStorage.setItem('elements_highscore',highscore); highscoreEl.textContent=highscore; }
+  }
+  function levelUp(){
+    level++; gravity+=0.4;
+    spawnRate=Math.max(25,spawnRate-10);
+    statusMsg.textContent="Level Up! Speed increased!";
+    levelUpSound();
+    setTimeout(()=>statusMsg.textContent="",2000);
+  }
+
+  // --- Canvas ---
+  function ensureCanvas(){
+    if(canvas) return;
+    canvas=document.createElement("canvas");
+    canvas.width=W; canvas.height=H;
+    ctx=canvas.getContext("2d");
+    canvasWrap.appendChild(canvas);
+    canvas.addEventListener("click",handleClick);
+  }
+  function drawTile(t){
+    ctx.fillStyle="#fff";
+    ctx.strokeStyle="#ddd";
+    ctx.lineWidth=2;
+    ctx.fillRect(t.x,t.y,t.w,t.h);
+    ctx.strokeRect(t.x,t.y,t.w,t.h);
+    ctx.fillStyle="#0f172a";
+    ctx.font="bold 22px Inter,sans-serif";
+    ctx.textAlign="center"; ctx.textBaseline="middle";
+    ctx.fillText(t.sym,t.x+t.w/2,t.y+t.h/2);
+  }
+  function handleClick(e){
+    if(!running) return;
+    const rect=canvas.getBoundingClientRect();
+    const x=(e.clientX-rect.left)*(canvas.width/rect.width);
+    const y=(e.clientY-rect.top)*(canvas.height/rect.height);
+    for(let i=elements.length-1;i>=0;i--){
+      const t=elements[i];
+      if(x>=t.x && x<=t.x+t.w && y>=t.y && y<=t.y+t.h){
+        elements.splice(i,1);
+        if(t.sym===target.sym){
+          score+=10; successSound();
+          addFloatText("+10 XP",t.x+t.w/2,t.y,"#16a34a");
+          statusMsg.textContent=`✅ Correct! That was ${target.name}`;
+          newTarget();
+          if(score>=level*50) levelUp();
+        }else{
+          lives--; errorSound();
+          addFloatText("Wrong!",t.x+t.w/2,t.y,"#ef4444");
+          statusMsg.textContent=`❌ Oops! That was ${t.sym}`;
+          if(lives<=0) return gameOver();
+        }
+        updateUI(); break;
+      }
+    }
+  }
+
+  // --- Loop ---
+  function loop(){
+    if(!running) return;
+    ctx.clearRect(0,0,W,H);
+    spawnTimer--;
+    if(spawnTimer<=0){
+      elements.push(createTile(Math.random()<0.3?target.sym:pickRandom(ELEMENTS).sym));
+      spawnTimer=spawnRate;
+    }
+    for(let i=elements.length-1;i>=0;i--){
+      const t=elements[i]; t.y+=t.speed;
+      if(t.y>H-10){
+        if(t.sym===target.sym){ lives--; errorSound(); statusMsg.textContent=`⚠️ Missed ${target.name}!`; if(lives<=0){ updateUI(); return gameOver(); } newTarget();}
+        elements.splice(i,1);
+      }
+    }
+    elements.forEach(drawTile);
+    drawFloatTexts();
+    updateUI();
+    animationId=requestAnimationFrame(loop);
+  }
+
+  // --- Wire buttons ---
+  startBtn.addEventListener("click",()=>{ if(audioCtx && audioCtx.state==="suspended"){ audioCtx.resume(); } startGame(); });
+  resetBtn.addEventListener("click",()=>resetGame());
+
+  // Init
+  updateUI(); statusMsg.textContent="Ready — press Start";
+})();
+</script>
+
+</body>
+</html>

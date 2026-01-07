@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Hub | STEM Explorer</title>
+  <link rel="stylesheet" href="quizz.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <div class="logo">🔥IGNITERA</div>
+    <div class="xp-section">
+      <span class="xp-label">XP:</span>
+      <div class="xp-bar"><div id="xp-progress"></div></div>
+      <span id="xp-points">0</span>
+    </div>
+    <div class="profile">
+      <img src="depositphotos_666884960-stock-illustration-default-anonymous-user-portrait-icon.jpg" class="avatar" alt="profile" />
+      <div class="profile-text">
+        <p>Vishakha</p>
+        <small>Student</small>
+      </div>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <!-- Game Sections -->
+  <div class="container">
+    <h1>🎮 Game Hub</h1>
+    <p>Choose a game and earn XP while learning!</p>
+
+    <div class="grid">
+      <!-- Science Quiz -->
+     <div class="card">
+  <h3>⚛️ Element Catcher</h3>
+  <p>Catch the correct chemical symbols to match the element name and earn XP.</p>
+  <button class="btn" ><a href="./atom.html">Play Now</a></button>
+</div>
+
+
+      <!-- Math Puzzle -->
+      <div class="card">
+        <h3>➗ Math Puzzle</h3>
+        <p>Solve fun puzzles and sharpen your brain.</p>
+        <button class="btn" ><a href="./mathgame.html">Play Now</a></button>
+      </div>
+
+      <!-- Typing Speed -->
+      <div class="card">
+        <h3>⌨️ Typing Speed</h3>
+        <p>Improve your typing speed while earning XP.</p>
+        <button class="btn" ><a href="./game_stem.html">Play Now</a></button>
+      </div>
+
+      <!-- Memory Game 
+     <div class="card">
+  <h3>🌍 Physics Adventure</h3>
+  <p>Learn forces & motion through interactive levels.</p>
+  <button class="btn" onclick="openGame('phy.html')">Play Now</button>
+</div>-->
+<div class="card">
+  <h3>🗺️ Map Game</h3>
+  <p>Test your geography skills with this interactive map challenge.</p>
+  <a href="https://szilvia-csernus.github.io/map-game/" target="_blank" class="btn">Play Now</a>
+</div>
+
+
+    </div>
+  </div>
+
+  <script src="quizz.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typing Challenge | STEM Explorer</title>
+  <link rel="stylesheet" href="game_stem.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">IGNITERA</div>
+    <div class="xp-section">
+      <span class="xp-label">XP:</span>
+      <div class="xp-bar"><div id="xp-progress"></div></div>
+      <span id="xp-points">0</span>
+    </div>
+    <div class="profile">
+      <img src="https://via.placeholder.com/42" class="avatar" alt="student avatar">
+      <div class="profile-text">
+        <p>Student</p>
+        <small>Class 8</small>
+      </div>
+    </div>
+  </header>
+
+  <!-- Game Container -->
+  <main class="game-container">
+    <h2>⌨️ Typing Speed Challenge</h2>
+    <p class="instructions">Type the given sentence as fast and accurately as possible.</p>
+
+    <div class="challenge-box" id="challengeText">Press "Start" to begin</div>
+
+    <textarea id="typingArea" placeholder="Start typing here..." disabled></textarea>
+
+    <div class="controls">
+      <button id="startBtn" class="btn">Start</button>
+    </div>
+
+    <div class="result" id="resultBox"></div>
+  </main>
+
+  <!-- Motivation + Badges -->
+  <section class="motivation-corner">
+    <h3>🏅 Achievements</h3>
+    <div class="badges">
+      <div class="badge" id="badge-speed">⚡ Fast Typer</div>
+      <div class="badge" id="badge-accuracy">🎯 Accuracy Pro</div>
+      <div class="badge" id="badge-master">🏆 Typing Master</div>
+    </div>
+    <p id="motivation-text">Keep practicing, every keystroke makes you stronger! 🚀</p>
+  </section>
+
+  <script src="game_stem.js"></script>
+</body>
+</html>

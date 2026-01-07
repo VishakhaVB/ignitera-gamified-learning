@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard | STEM Explorer</title>
+  <link rel="stylesheet" href="leaderboard.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">🔥 IGNITERA</div>
+    <div class="xp-section">
+      <span class="xp-label">XP</span>
+      <div class="xp-bar"><div id="xp-progress"></div></div>
+    </div>
+    <div class="profile">
+      <img src="depositphotos_666884960-stock-illustration-default-anonymous-user-portrait-icon.jpg" class="avatar" alt="profile" />
+      <div class="profile-text">
+        <p>Vishakha</p>
+        <small>Student</small>
+      </div>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </div>
+  </header>
+
+  <!-- Main Leaderboard Section -->
+  <main>
+    <section class="welcome">
+      <h2>🏆 Leaderboard</h2>
+      <p>Compete with your classmates and climb the ranks 🚀</p>
+    </section>
+
+    <section class="main-cards" id="leaderboard-cards">
+      <!-- JS will inject top 5 student cards -->
+    </section>
+
+    <section class="motivation-corner">
+      <h3>⭐ Achievements & Tips</h3>
+      <p id="motivation-text">🔥 You’re in Top 3 of your class!</p>
+      <div class="badges">
+        <span class="badge">🎯 Quiz Master</span>
+        <span class="badge">📚 Knowledge Seeker</span>
+        <span class="badge">⚡ Streak 7 Days</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="leaderboard.js"></script>
+</body>
+</html>

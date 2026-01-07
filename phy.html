@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Adventure: Forces & Motion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        /* Modern color scheme */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ff9505;
+            --danger: #ff3b30;
+            --card-bg: #ffffff;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --border-radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4e7ec);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            position: relative;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 22px 25px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 6px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 1.05rem;
+            opacity: 0.9;
+            max-width: 500px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            padding: 18px 25px;
+            color: white;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-top: -1px;
+        }
+
+        .dashboard-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-label {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 5px;
+        }
+
+        .dashboard-value {
+            font-size: 1.35rem;
+            font-weight: bold;
+        }
+
+        .progress-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.25);
+            height: 10px;
+            border-radius: 20px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+        }
+
+        main {
+            padding: 25px;
+            background: white;
+        }
+
+        .level-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .level-title {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .level-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        .game-area {
+            min-height: 350px;
+            border: 2px dashed var(--primary);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 25px;
+            background: #f8fafc;
+        }
+
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .puzzle-piece {
+            background: white;
+            color: var(--text-primary);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            padding: 18px 12px;
+            text-align: center;
+            min-height: 90px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .puzzle-piece:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        .drop-zone {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            justify-content: center;
+            min-height: 130px;
+            border: 2px dashed var(--accent);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            background: rgba(76, 201, 240, 0.08);
+        }
+
+        .drop-slot {
+            background: white;
+            border: 2px dashed var(--accent);
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 15px 10px;
+            min-height: 90px;
+            transition: all 0.3s ease;
+        }
+
+        .drop-slot.filled {
+            border-style: solid;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+        }
+
+        .hint-container {
+            background: #fff9e6;
+            border-left: 4px solid var(--warning);
+            padding: 18px;
+            border-radius: var(--border-radius);
+            margin-top: 20px;
+            display: none;
+        }
+
+        .hint-title {
+            font-weight: bold;
+            color: var(--warning);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #3651d3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(58, 12, 163, 0.3);
+        }
+
+        .btn-secondary:hover {
+            background: #2f0a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(58, 12, 163, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .level-up-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(67, 97, 238, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .level-up-screen.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .level-up-content {
+            background: white;
+            color: var(--text-primary);
+            padding: 35px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .level-up-title {
+            font-size: 2.3rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .level-up-badge {
+            font-size: 1.2rem;
+            color: var(--accent);
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .badge-icon {
+            font-size: 3.5rem;
+            margin: 20px 0;
+            color: var(--secondary);
+        }
+
+        .confetti {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            opacity: 0.8;
+            border-radius: 50%;
+        }
+
+        footer {
+            background: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 18px;
+            font-size: 0.95rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .puzzle-container, .drop-zone {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .level-title {
+                font-size: 1.4rem;
+            }
+            
+            .game-area {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            header h1 {
+                font-size: 1.7rem;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .game-area {
+                padding: 12px;
+            }
+            
+            .puzzle-container, .drop-zone {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <header>
+            <div class="header-content">
+                <h1>Physics Adventure</h1>
+                <p>Forces & Motion • Grade 8</p>
+            </div>
+            
+            <div class="dashboard">
+                <div class="dashboard-item">
+                    <span class="dashboard-label">Level</span>
+                    <div class="dashboard-value" id="level-display">1</div>
+                </div>
+                <div class="dashboard-item">
+                    <span class="dashboard-label">XP</span>
+                    <div class="dashboard-value" id="xp-display">0</div>
+                </div>
+                <div class="dashboard-item">
+                    <span class="dashboard-label">Next Goal</span>
+                    <div class="dashboard-value" id="next-goal">50 XP</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="dashboard-item">
+                    <span class="dashboard-label">Badge</span>
+                    <div class="dashboard-value" id="badge-display">None</div>
+                </div>
+            </div>
+        </header>
+        
+        <main>
+            <div class="level-header">
+                <h2 class="level-title" id="level-title">Level 1: Identify Types of Forces</h2>
+                <p class="level-description" id="level-description">Drag the force names to their correct descriptions</p>
+            </div>
+            
+            <div class="game-area" id="game-area">
+                <!-- Game content will be dynamically loaded here -->
+            </div>
+            
+            <div class="hint-container" id="hint-box">
+                <div class="hint-title"><i class="fas fa-lightbulb"></i> Hint:</div>
+                <div id="hint-text"></div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn-outline" id="hint-btn"><i class="fas fa-question-circle"></i> Get Hint</button>
+                <button class="btn-primary" id="check-btn"><i class="fas fa-check"></i> Check Answer</button>
+                <button class="btn-secondary" id="next-btn" disabled><i class="fas fa-arrow-right"></i> Next Level</button>
+            </div>
+        </main>
+        
+        <footer>
+            <p>You are a young scientist on a mission to master physics! 🚀</p>
+        </footer>
+    </div>
+    
+    <div class="level-up-screen" id="level-up-screen">
+        <div class="level-up-content">
+            <h2 class="level-up-title">Level Complete!</h2>
+            <p>You've earned <span id="earned-xp">0</span> XP</p>
+            <div class="badge-icon" id="badge-icon">⭐</div>
+            <div class="level-up-badge" id="level-up-badge">No new badge</div>
+            <button class="btn-primary" id="continue-btn"><i class="fas fa-play"></i> Continue</button>
+        </div>
+    </div>
+
+    <script>
+        // Physics educational game with improved UI/UX
+        const gameState = {
+            currentLevel: 1,
+            xp: 0,
+            badges: [],
+            levels: [
+                {
+                    title: "Level 1: Identify Types of Forces",
+                    description: "Drag the force names to their correct descriptions",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "gravity", text: "Gravity", color: "#4361ee" },
+                        { id: "friction", text: "Friction", color: "#3a0ca3" },
+                        { id: "tension", text: "Tension", color: "#4cc9f0" },
+                        { id: "normal", text: "Normal Force", color: "#7209b7" }
+                    ],
+                    slots: [
+                        { id: "desc1", text: "Force pulling objects toward Earth" },
+                        { id: "desc2", text: "Force that opposes motion between surfaces" },
+                        { id: "desc3", text: "Force in a stretched rope or string" },
+                        { id: "desc4", text: "Force perpendicular to a surface" }
+                    ],
+                    correctMatches: {
+                        "gravity": "desc1",
+                        "friction": "desc2",
+                        "tension": "desc3",
+                        "normal": "desc4"
+                    },
+                    hint: "Gravity pulls objects downward, friction opposes motion, tension occurs in ropes and strings, and normal force is perpendicular to surfaces.",
+                    xpReward: 10
+                },
+                {
+                    title: "Level 2: Force Vectors",
+                    description: "Match the force arrows with their correct descriptions",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "arrow-down", text: "↓", color: "#4361ee" },
+                        { id: "arrow-left", text: "←", color: "#3a0ca3" },
+                        { id: "arrow-right", text: "→", color: "#4cc9f0" },
+                        { id: "arrow-up", text: "↑", color: "#7209b7" }
+                    ],
+                    slots: [
+                        { id: "gravity-dir", text: "Direction of gravity" },
+                        { id: "friction-dir", text: "Direction of friction" },
+                        { id: "applied-dir", text: "Direction of applied force" },
+                        { id: "normal-dir", text: "Direction of normal force" }
+                    ],
+                    correctMatches: {
+                        "arrow-down": "gravity-dir",
+                        "arrow-left": "friction-dir",
+                        "arrow-right": "applied-dir",
+                        "arrow-up": "normal-dir"
+                    },
+                    hint: "Gravity acts downward, friction opposes motion, applied force is the direction of push/pull, and normal force is perpendicular to the surface.",
+                    xpReward: 15
+                },
+                {
+                    title: "Level 3: Newton's Laws",
+                    description: "Match the physics law to its correct description",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "law1", text: "Newton's 1st Law", color: "#4361ee" },
+                        { id: "law2", text: "Newton's 2nd Law", color: "#3a0ca3" },
+                        { id: "law3", text: "Newton's 3rd Law", color: "#4cc9f0" }
+                    ],
+                    slots: [
+                        { id: "law1-desc", text: "An object at rest stays at rest unless acted upon" },
+                        { id: "law2-desc", text: "Force equals mass times acceleration (F=ma)" },
+                        { id: "law3-desc", text: "For every action there is an equal opposite reaction" }
+                    ],
+                    correctMatches: {
+                        "law1": "law1-desc",
+                        "law2": "law2-desc",
+                        "law3": "law3-desc"
+                    },
+                    hint: "1st Law: Inertia, 2nd Law: F=ma, 3rd Law: Action-Reaction pairs.",
+                    xpReward: 20
+                },
+                {
+                    title: "Level 4: Calculate Net Force",
+                    description: "Drag the correct net force for each scenario",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "force1", text: "5N Right", color: "#4361ee" },
+                        { id: "force2", text: "0N", color: "#3a0ca3" },
+                        { id: "force3", text: "2N Left", color: "#4cc9f0" },
+                        { id: "force4", text: "10N Right", color: "#7209b7" }
+                    ],
+                    slots: [
+                        { id: "scenario1", text: "3N left + 2N right" },
+                        { id: "scenario2", text: "5N left + 5N right" },
+                        { id: "scenario3", text: "6N left + 4N right" },
+                        { id: "scenario4", text: "8N right + 2N right" }
+                    ],
+                    correctMatches: {
+                        "force1": "scenario3",
+                        "force2": "scenario2",
+                        "force3": "scenario1",
+                        "force4": "scenario4"
+                    },
+                    hint: "To find net force, subtract opposing forces and keep the direction of the larger force.",
+                    xpReward: 25
+                },
+                {
+                    title: "Level 5: Motion Graphs",
+                    description: "Match the graphs with their descriptions",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "graph1", text: "Constant Speed", color: "#4361ee" },
+                        { id: "graph2", text: "Acceleration", color: "#3a0ca3" },
+                        { id: "graph3", text: "At Rest", color: "#4cc9f0" },
+                        { id: "graph4", text: "Deceleration", color: "#7209b7" }
+                    ],
+                    slots: [
+                        { id: "desc-a", text: "Straight diagonal line on distance-time graph" },
+                        { id: "desc-b", text: "Curved line on distance-time graph" },
+                        { id: "desc-c", text: "Flat horizontal line on distance-time graph" },
+                        { id: "desc-d", text: "Decreasing slope on distance-time graph" }
+                    ],
+                    correctMatches: {
+                        "graph1": "desc-a",
+                        "graph2": "desc-b",
+                        "graph3": "desc-c",
+                        "graph4": "desc-d"
+                    },
+                    hint: "Constant speed shows as straight line, acceleration as curved line, at rest as flat line, and deceleration as decreasing slope.",
+                    xpReward: 30
+                },
+                {
+                    title: "Level 6: Friction Types",
+                    description: "Identify the type of friction in each scenario",
+                    type: "drag-drop",
+                    pieces: [
+                        { id: "static", text: "Static", color: "#4361ee" },
+                        { id: "sliding", text: "Sliding", color: "#3a0ca3" },
+                        { id: "rolling", text: "Rolling", color: "#4cc9f0" },
+                        { id: "fluid", text: "Fluid", color: "#7209b7" }
+                    ],
+                    slots: [
+                        { id: "scenario-a", text: "Pushing a heavy box that doesn't move" },
+                        { id: "scenario-b", text: "Sliding a book across a table" },
+                        { id: "scenario-c", text: "Riding a bicycle" },
+                        { id: "scenario-d", text: "Swimming through water" }
+                    ],
+                    correctMatches: {
+                        "static": "scenario-a",
+                        "sliding": "scenario-b",
+                        "rolling": "scenario-c",
+                        "fluid": "scenario-d"
+                    },
+                    hint: "Static friction prevents motion, sliding friction opposes sliding motion, rolling friction affects rolling objects, and fluid friction occurs in liquids/gases.",
+                    xpReward: 40
+                }
+            ],
+            badges: [
+                { name: "Beginner Scientist", xp: 30, icon: "🔬" },
+                { name: "Force Explorer", xp: 70, icon: "⚡" },
+                { name: "Motion Master", xp: 120, icon: "🚀" },
+                { name: "Equation Expert", xp: 180, icon: "📊" },
+                { name: "Physics Prodigy", xp: 250, icon: "🌟" }
+            ]
+        };
+
+        // DOM elements
+        const levelDisplay = document.getElementById('level-display');
+        const xpDisplay = document.getElementById('xp-display');
+        const nextGoal = document.getElementById('next-goal');
+        const progressBar = document.getElementById('progress-bar');
+        const badgeDisplay = document.getElementById('badge-display');
+        const levelTitle = document.getElementById('level-title');
+        const levelDescription = document.getElementById('level-description');
+        const gameArea = document.getElementById('game-area');
+        const hintBox = document.getElementById('hint-box');
+        const hintText = document.getElementById('hint-text');
+        const hintBtn = document.getElementById('hint-btn');
+        const checkBtn = document.getElementById('check-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const levelUpScreen = document.getElementById('level-up-screen');
+        const earnedXp = document.getElementById('earned-xp');
+        const badgeIcon = document.getElementById('badge-icon');
+        const levelUpBadge = document.getElementById('level-up-badge');
+        const continueBtn = document.getElementById('continue-btn');
+
+        // Initialize game
+        function initGame() {
+            loadGameState();
+            loadLevel(gameState.currentLevel);
+            updateDashboard();
+            
+            // Event listeners
+            hintBtn.addEventListener('click', showHint);
+            checkBtn.addEventListener('click', checkAnswer);
+            nextBtn.addEventListener('click', nextLevel);
+            continueBtn.addEventListener('click', hideLevelUpScreen);
+        }
+
+        // Load game state from localStorage
+        function loadGameState() {
+            const savedState = localStorage.getItem('physicsAdventureState');
+            if (savedState) {
+                const parsedState = JSON.parse(savedState);
+                gameState.currentLevel = parsedState.currentLevel || 1;
+                gameState.xp = parsedState.xp || 0;
+                gameState.badges = parsedState.badges || [];
+            }
+        }
+
+        // Save game state to localStorage
+        function saveGameState() {
+            localStorage.setItem('physicsAdventureState', JSON.stringify({
+                currentLevel: gameState.currentLevel,
+                xp: gameState.xp,
+                badges: gameState.badges
+            }));
+        }
+
+        // Update dashboard with current state
+        function updateDashboard() {
+            levelDisplay.textContent = gameState.currentLevel;
+            xpDisplay.textContent = gameState.xp;
+            
+            // Find next badge goal
+            const nextBadge = gameState.badges.find(badge => badge.xp > gameState.xp) || 
+                             gameState.badges[gameState.badges.length - 1];
+            
+            if (nextBadge) {
+                nextGoal.textContent = `${nextBadge.xp} XP`;
+                const progressPercent = Math.min(100, (gameState.xp / nextBadge.xp) * 100);
+                progressBar.style.width = `${progressPercent}%`;
+            }
+            
+            // Display highest badge earned
+            const earnedBadges = gameState.badges.filter(badge => badge.xp <= gameState.xp);
+            if (earnedBadges.length > 0) {
+                const highestBadge = earnedBadges[earnedBadges.length - 1];
+                badgeDisplay.textContent = highestBadge.name;
+            } else {
+                badgeDisplay.textContent = "None";
+            }
+        }
+
+        // Load a specific level
+        function loadLevel(levelNumber) {
+            const levelIndex = levelNumber - 1;
+            if (levelIndex >= gameState.levels.length) {
+                // Game completed
+                gameArea.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <h2 style="color: var(--primary); margin-bottom: 20px;">Congratulations!</h2>
+                        <p style="font-size: 1.2rem; margin-bottom: 20px;">You've completed all levels and mastered Forces & Motion!</p>
+                        <div style="font-size: 3rem; margin: 20px 0;">🏆</div>
+                        <p style="font-size: 1.1rem;">Total XP: ${gameState.xp}</p>
+                    </div>
+                `;
+                checkBtn.disabled = true;
+                nextBtn.disabled = true;
+                hintBtn.disabled = true;
+                return;
+            }
+            
+            const level = gameState.levels[levelIndex];
+            levelTitle.textContent = level.title;
+            levelDescription.textContent = level.description;
+            
+            // Load level content based on type
+            if (level.type === 'drag-drop') {
+                loadDragDropLevel(level);
+            } else if (level.type === 'sequence') {
+                loadSequenceLevel(level);
+            }
+            
+            // Reset hint and buttons
+            hintBox.style.display = 'none';
+            checkBtn.disabled = false;
+            nextBtn.disabled = true;
+        }
+
+        // Load a drag-and-drop level
+        function loadDragDropLevel(level) {
+            gameArea.innerHTML = `
+                <div class="puzzle-container" id="puzzle-container">
+                    ${level.pieces.map(piece => `
+                        <div class="puzzle-piece" data-id="${piece.id}" 
+                             style="border-left: 5px solid ${piece.color}" draggable="true">
+                            ${piece.text}
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="drop-zone" id="drop-zone">
+                    ${level.slots.map(slot => `
+                        <div class="drop-slot" data-id="${slot.id}">
+                            ${slot.text}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            // Set up drag and drop functionality
+            const pieces = document.querySelectorAll('.puzzle-piece');
+            const slots = document.querySelectorAll('.drop-slot');
+            
+            pieces.forEach(piece => {
+                piece.addEventListener('dragstart', dragStart);
+            });
+            
+            slots.forEach(slot => {
+                slot.addEventListener('dragover', dragOver);
+                slot.addEventListener('drop', drop);
+            });
+        }
+
+        // Drag and drop functions
+        function dragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.dataset.id);
+            setTimeout(() => {
+                e.target.classList.add('dragging');
+            }, 0);
+        }
+
+        function dragOver(e) {
+            e.preventDefault();
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const id = e.dataTransfer.getData('text/plain');
+            const draggable = document.querySelector(`[data-id="${id}"]`);
+            
+            // Only allow dropping on empty slots
+            if (e.target.classList.contains('drop-slot') && e.target.children.length === 0) {
+                e.target.appendChild(draggable);
+                e.target.classList.add('filled');
+                draggable.classList.remove('dragging');
+                
+                // Play drop sound
+                playSound('drop');
+            }
+        }
+
+        // Show hint for current level
+        function showHint() {
+            const levelIndex = gameState.currentLevel - 1;
+            hintText.textContent = gameState.levels[levelIndex].hint;
+            hintBox.style.display = 'block';
+            
+            // Play sound
+            playSound('hint');
+        }
+
+        // Check if the answer is correct
+        function checkAnswer() {
+            const levelIndex = gameState.currentLevel - 1;
+            const level = gameState.levels[levelIndex];
+            let isCorrect = false;
+            
+            if (level.type === 'drag-drop') {
+                isCorrect = checkDragDropAnswer(level);
+            }
+            
+            if (isCorrect) {
+                // Correct answer
+                playSound('correct');
+                levelComplete(level.xpReward);
+            } else {
+                // Incorrect answer
+                playSound('wrong');
+                alert('Not quite right. Try again or use the hint button for help!');
+            }
+        }
+
+        // Check drag and drop answer
+        function checkDragDropAnswer(level) {
+            const slots = document.querySelectorAll('.drop-slot');
+            let allCorrect = true;
+            
+            for (const slot of slots) {
+                const piece = slot.querySelector('.puzzle-piece');
+                if (!piece) {
+                    allCorrect = false;
+                    continue;
+                }
+                
+                const pieceId = piece.dataset.id;
+                const slotId = slot.dataset.id;
+                
+                if (level.correctMatches[pieceId] !== slotId) {
+                    allCorrect = false;
+                }
+            }
+            
+            return allCorrect;
+        }
+
+        // Handle level completion
+        function levelComplete(xpEarned) {
+            gameState.xp += xpEarned;
+            
+            // Check for new badges
+            const newBadges = gameState.badges.filter(badge => 
+                badge.xp <= gameState.xp && !gameState.badges.includes(badge)
+            );
+            
+            // Show level up screen
+            earnedXp.textContent = xpEarned;
+            
+            if (newBadges.length > 0) {
+                badgeIcon.textContent = newBadges[0].icon;
+                levelUpBadge.textContent = `New Badge: ${newBadges[0].name}`;
+                gameState.badges.push(...newBadges);
+            } else {
+                badgeIcon.textContent = "⭐";
+                levelUpBadge.textContent = "No new badge";
+            }
+            
+            levelUpScreen.classList.add('show');
+            
+            // Play level up sound
+            playSound('levelup');
+            
+            // Enable next level button
+            nextBtn.disabled = false;
+            
+            // Save game state
+            saveGameState();
+            updateDashboard();
+        }
+
+        // Move to next level
+        function nextLevel() {
+            gameState.currentLevel++;
+            saveGameState();
+            loadLevel(gameState.currentLevel);
+        }
+
+        // Hide level up screen
+        function hideLevelUpScreen() {
+            levelUpScreen.classList.remove('show');
+        }
+
+        // Play sound effects
+        function playSound(type) {
+            // Simple beep sounds using the Web Audio API
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                switch(type) {
+                    case 'correct':
+                        oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime); // C5
+                        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                        break;
+                    case 'wrong':
+                        oscillator.frequency.setValueAtTime(349.23, audioContext.currentTime); // F4
+                        gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+                        break;
+                    case 'levelup':
+                        oscillator.frequency.setValueAtTime(659.25, audioContext.currentTime); // E5
+                        gainNode.gain.setValueAtTime(0.7, audioContext.currentTime);
+                        break;
+                    case 'drop':
+                        oscillator.frequency.setValueAtTime(392.00, audioContext.currentTime); // G4
+                        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+                        break;
+                    case 'hint':
+                        oscillator.frequency.setValueAtTime(783.99, audioContext.currentTime); // G5
+                        gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+                        break;
+                }
+                
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.3);
+            } catch (e) {
+                // Browser doesn't support Web Audio API
+                console.log("Audio not supported");
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', initGame);
+    </script>
+</body>
+</html>

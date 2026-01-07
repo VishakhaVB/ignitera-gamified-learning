@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Sign Up - STEM Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6A11CB 0%, #2575FC 100%);
+            --accent-green: #39FF14;
+            --text-primary: #1E1E1E;
+            --text-secondary: #6B7280;
+            --bg-glass: rgba(255, 255, 255, 0.95);
+            --border-light: rgba(106, 17, 203, 0.2);
+            --shadow-light: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --error-color: #EF4444;
+            --success-color: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--primary-gradient);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Subtle background particles for premium feel */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(57, 255, 20, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(106, 17, 203, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(37, 117, 252, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+            animation: particleFloat 25s ease-in-out infinite;
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 16px;
+            padding: 20px 30px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-light);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        .logo-text {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(5deg); }
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .back-link:hover {
+            color: var(--accent-green);
+            transform: translateX(-5px);
+        }
+
+        .main-content {
+            display: flex;
+            width: 100%;
+            gap: 40px;
+            justify-content: center;
+            align-items: stretch;
+            flex-wrap: wrap;
+        }
+
+        .auth-card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: var(--shadow-light);
+            overflow: hidden;
+            width: 420px;
+            max-width: 100%;
+            border: 1px solid var(--border-light);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .auth-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .auth-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.8);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tab:hover {
+            color: #6A11CB;
+            background: rgba(106, 17, 203, 0.05);
+        }
+
+        .tab.active {
+            color: #6A11CB;
+            background: rgba(106, 17, 203, 0.1);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: var(--accent-green);
+            border-radius: 2px;
+        }
+
+        .form-container {
+            padding: 40px 32px;
+            display: none;
+        }
+
+        .form-container.active {
+            display: block;
+            animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-title {
+            text-align: center;
+            margin-bottom: 32px;
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            pointer-events: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .input-label i {
+            color: var(--accent-green);
+            font-size: 1rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            background: rgba(255, 255, 255, 0.7);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .input-field:focus {
+            border-color: #6A11CB;
+            box-shadow: 0 0 0 4px rgba(106, 17, 203, 0.1);
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .input-field:focus + .input-label,
+        .input-field:not(:placeholder-shown) + .input-label {
+            top: -8px;
+            left: 12px;
+            font-size: 0.8rem;
+            background: var(--bg-glass);
+            padding: 0 8px;
+            color: #6A11CB;
+        }
+
+        .input-field::placeholder {
+            color: transparent;
+        }
+
+        .input-field option {
+            padding: 8px;
+        }
+
+        .select-wrapper {
+            position: relative;
+        }
+        
+        .select-wrapper::after {
+            content: '\f107';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .select-wrapper select:focus + .input-label,
+        .select-wrapper select:not([value=""]) + .input-label {
+            top: -8px;
+            left: 12px;
+            font-size: 0.8rem;
+            background: var(--bg-glass);
+            padding: 0 8px;
+            color: #6A11CB;
+        }
+
+        .conditional-section {
+            display: none;
+            margin-top: 20px;
+            animation: fadeInUp 0.4s ease;
+            border-top: 1px solid var(--border-light);
+            padding-top: 24px;
+        }
+
+        .conditional-section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .multi-select {
+            height: 100px;
+            padding: 8px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+            animation: shimmer 2s infinite;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(106, 17, 203, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-message {
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 6px;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .success-message {
+            color: var(--success-color);
+            font-size: 0.95rem;
+            text-align: center;
+            margin-top: 16px;
+            display: none;
+            padding: 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--success-color);
+        }
+
+        .switch-prompt {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-light);
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .switch-prompt a {
+            color: #6A11CB;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .switch-prompt a:hover {
+            color: var(--accent-green);
+            text-decoration: underline;
+        }
+
+        .overview-panel {
+            flex: 1;
+            min-width: 320px;
+            max-width: 400px;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px 32px;
+            box-shadow: var(--shadow-light);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            transition: all 0.4s ease;
+        }
+
+        .overview-panel:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .overview-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        .overview-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .overview-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .overview-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            border-left: 3px solid var(--border-light);
+        }
+
+        .overview-item:hover {
+            background: rgba(255, 255, 255, 0.7);
+            transform: translateX(4px);
+            border-left-color: var(--accent-green);
+        }
+
+        .overview-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .overview-text {
+            flex: 1;
+        }
+
+        .overview-text h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .overview-text p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 24px;
+            }
+
+            .auth-card {
+                width: 100%;
+                max-width: 420px;
+            }
+
+            .overview-panel {
+                width: 100%;
+                max-width: 420px;
+                text-align: center;
+            }
+
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 32px 24px;
+            }
+
+            .tabs .tab {
+                padding: 16px;
+                font-size: 0.95rem;
+            }
+
+            .logo i {
+                font-size: 2rem;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Logo and Back Link -->
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-atom"></i>
+                <span class="logo-text">IGNITERA</span>
+            </div>
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to Home
+            </a>
+        </div>
+
+        <div class="main-content">
+            <!-- Authentication Card -->
+            <div class="auth-card">
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('login')">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </div>
+                    <div class="tab" onclick="switchTab('signup')">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </div>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="form-container active">
+                    <h2 class="form-title">Welcome Back</h2>
+                    
+                    <div class="input-group">
+                        <input type="text" id="loginEmail" class="input-field" placeholder="Email or Phone" required>
+                        <label class="input-label">
+                            <i class="fas fa-envelope"></i>
+                            Email or Phone
+                        </label>
+                        <div class="error-message" id="loginEmailError"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Password" required>
+                        <label class="input-label">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="error-message" id="loginPasswordError"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="select-wrapper">
+                            <select id="loginRole" class="input-field" required>
+                                <option value="">Select Role</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                            </select>
+                            <label class="input-label">
+                                <i class="fas fa-user"></i>
+                                Role
+                            </label>
+                        </div>
+                        <div class="error-message" id="loginRoleError"></div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" onclick="handleLogin()">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    
+                    <div class="success-message" id="loginSuccess"></div>
+                    
+                    <div class="switch-prompt">
+                        Don't have an account? <a onclick="switchTab('signup')">Sign up</a>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupForm" class="form-container">
+                    <h2 class="form-title">Create Account</h2>
+                    
+                    <div class="input-group">
+                        <input type="text" id="signupName" class="input-field" placeholder="Full Name" required>
+                        <label class="input-label">
+                            <i class="fas fa-user"></i>
+                            Full Name
+                        </label>
+                        <div class="error-message" id="signupNameError"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="text" id="signupEmail" class="input-field" placeholder="Email or Phone" required>
+                        <label class="input-label">
+                            <i class="fas fa-envelope"></i>
+                            Email or Phone
+                        </label>
+                        <div class="error-message" id="signupEmailError"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <input type="password" id="signupPassword" class="input-field" placeholder="Password" required minlength="6">
+                        <label class="input-label">
+                            <i class="fas fa-lock"></i>
+                            Password
+                        </label>
+                        <div class="error-message" id="signupPasswordError"></div>
+                    </div>
+                    
+                    <div class="input-group">
+                        <div class="select-wrapper">
+                            <select id="signupRole" class="input-field" onchange="toggleConditionalFields()" required>
+                                <option value="">Select Role</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                            </select>
+                            <label class="input-label">
+                                <i class="fas fa-user-tag"></i>
+                                Role
+                            </label>
+                        </div>
+                        <div class="error-message" id="signupRoleError"></div>
+                    </div>
+                    
+                    <!-- Conditional Fields for Student -->
+                    <div id="studentFields" class="conditional-section">
+                        <div class="input-group">
+                            <div class="select-wrapper">
+                                <select id="studentClass" class="input-field" required>
+                                    <option value="">Choose Class</option>
+                                    <option value="6">Class 6</option>
+                                    <option value="7">Class 7</option>
+                                    <option value="8">Class 8</option>
+                                    <option value="9">Class 9</option>
+                                    <option value="10">Class 10</option>
+                                </select>
+                                <label class="input-label">
+                                    <i class="fas fa-school"></i>
+                                    Choose Class
+                                </label>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" id="schoolName" class="input-field" placeholder="School Name" required>
+                            <label class="input-label">
+                                <i class="fas fa-building"></i>
+                                School Name
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Conditional Fields for Teacher -->
+                    <div id="teacherFields" class="conditional-section">
+                        <div class="input-group">
+                            <div class="select-wrapper">
+                                <select id="teacherClasses" class="input-field multi-select" multiple required>
+                                    <option value="6">Class 6</option>
+                                    <option value="7">Class 7</option>
+                                    <option value="8">Class 8</option>
+                                    <option value="9">Class 9</option>
+                                    <option value="10">Class 10</option>
+                                </select>
+                                <label class="input-label">
+                                    <i class="fas fa-chalkboard"></i>
+                                    Classes They Teach
+                                </label>
+                            </div>
+                            <small>Hold Ctrl/Cmd to select multiple</small>
+                        </div>
+                        <div class="input-group">
+                            <div class="select-wrapper">
+                                <select id="teacherSubjects" class="input-field multi-select" multiple required>
+                                    <option value="math">Mathematics</option>
+                                    <option value="science">Science</option>
+                                    <option value="english">English</option>
+                                    <option value="social">Social Science</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="biology">Biology</option>
+                                </select>
+                                <label class="input-label">
+                                    <i class="fas fa-book"></i>
+                                    Subjects
+                                </label>
+                            </div>
+                            <small>Hold Ctrl/Cmd to select multiple</small>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn" onclick="handleSignup()">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </button>
+                    
+                    <div class="success-message" id="signupSuccess"></div>
+                    
+                    <div class="switch-prompt">
+                        Already have an account? <a onclick="switchTab('login')">Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Panel -->
+            <div class="overview-panel">
+                <h2 class="overview-title">Join Our Learning Community</h2>
+                <p class="overview-subtitle">Access personalized STEM education resources designed specifically for rural students and teachers.</p>
+                
+                <div class="overview-grid">
+                    <div class="overview-item">
+                        <div class="overview-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="overview-text">
+                            <h4>Student Benefits</h4>
+                            <p>Interactive lessons, progress tracking, and gamified learning experiences.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overview-item">
+                        <div class="overview-icon">
+                            <i class="fas fa-chalkboard-teacher"></i>
+                        </div>
+                        <div class="overview-text">
+                            <h4>Teacher Resources</h4>
+                            <p>Lesson plans, student analytics, and classroom management tools.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overview-item">
+                        <div class="overview-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="overview-text">
+                            <h4>Accessible Anywhere</h4>
+                            <p>Works on low-bandwidth connections with offline capabilities.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="overview-item">
+                        <div class="overview-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="overview-text">
+                            <h4>Proven Results</h4>
+                            <p>82% improvement in STEM comprehension among participating students.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Tab switching
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector(`.tab:nth-child(${tabName === 'login' ? 1 : 2})`).classList.add('active');
+
+        document.querySelectorAll('.form-container').forEach(form => form.classList.remove('active'));
+        document.getElementById(`${tabName}Form`).classList.add('active');
+
+        document.querySelectorAll('.error-message, .success-message').forEach(el => {
+            el.style.display = "none"; el.textContent = "";
+        });
+    }
+
+    // Toggle fields (signup)
+    function toggleConditionalFields() {
+        const role = document.getElementById("signupRole").value;
+        document.getElementById("studentFields").classList.toggle("active", role === "student");
+        document.getElementById("teacherFields").classList.toggle("active", role === "teacher");
+    }
+
+    // Handle Login
+    function handleLogin(event) {
+        if (event) event.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+        const role = document.getElementById("loginRole").value;
+
+        if (!email || !password || !role) {
+            document.getElementById("loginEmailError").textContent = !email ? "Email required" : "";
+            document.getElementById("loginPasswordError").textContent = !password ? "Password required" : "";
+            document.getElementById("loginRoleError").textContent = !role ? "Role required" : "";
+            document.querySelectorAll('.error-message').forEach(e => e.style.display = e.textContent ? "block" : "none");
+            return;
+        }
+
+        // ✅ Redirect by role
+        if (role === "student") {
+            window.location.href = "studentdash.html";
+        } else if (role === "teacher") {
+            window.location.href = "teacherdashboard.html";
+        } else {
+            alert("Redirect page not set for this role.");
+        }
+    }
+
+    // Handle Signup
+    function handleSignup(event) {
+        if (event) event.preventDefault();
+
+        const name = document.getElementById("signupName").value.trim();
+        const email = document.getElementById("signupEmail").value.trim();
+        const password = document.getElementById("signupPassword").value.trim();
+        const role = document.getElementById("signupRole").value;
+
+        if (!name || !email || !password || !role) {
+            document.getElementById("signupNameError").textContent = !name ? "Name required" : "";
+            document.getElementById("signupEmailError").textContent = !email ? "Email required" : "";
+            document.getElementById("signupPasswordError").textContent = !password ? "Password required" : "";
+            document.getElementById("signupRoleError").textContent = !role ? "Role required" : "";
+            document.querySelectorAll('.error-message').forEach(e => e.style.display = e.textContent ? "block" : "none");
+            return;
+        }
+
+        // ✅ Redirect after signup
+        if (role === "student") {
+            window.location.href = "studentdash.html";
+        } else if (role === "teacher") {
+            window.location.href = "teacherdash.html";
+        } else {
+            alert("Redirect page not set for this role.");
+        }
+    }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard | STEM Platform</title>
+  <link rel="stylesheet" href="teacherdashboard.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">IGNITERA</div>
+    <div class="profile">
+      <img src="depositphotos_666884960-stock-illustration-default-anonymous-user-portrait-icon.jpg" alt="Teacher Avatar" class="avatar">
+      <div class="profile-text">
+        <p id="teacherName">Teacher</p>
+        <small id="teacherClass">Class: 8</small>
+      </div>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <!-- Welcome Section -->
+  <section class="welcome">
+    <h2 id="greeting"></h2>
+    <p>Welcome back, <span id="teacherNameWelcome"></span> 👩‍🏫</p>
+    <p class="streak-box">📅 Today’s Goal: Review student progress!</p>
+  </section>
+
+  <!-- Main Cards -->
+  <main class="main-cards">
+    <div class="card" onclick="navigateTo('manage-courses.html')">📚 <span>Manage Courses</span></div>
+    <div class="card" onclick="navigateTo('student-progress.html')">📊 <span>Student Progress</span></div>
+    <div class="card" onclick="navigateTo('quiz-management.html')">🎯 <span>Quiz Management</span></div>
+    <div class="card" onclick="navigateTo('leaderboard.html')">🏆 <span>Leaderboard</span></div>
+    <div class="card" onclick="navigateTo('messages.html')">✉️ <span>Messages</span></div>
+  </main>
+
+  <!-- Notes Section -->
+  <section class="notes">
+    <h3>📒 Teacher Notes</h3>
+    <textarea id="note-input" placeholder="Write class notes or reminders..."></textarea>
+    <button class="btn" onclick="saveNote()">Save Note</button>
+    <button class="btn" onclick="clearNote()">Clear</button>
+    <ul id="notes-list"></ul>
+  </section>
+
+  <!-- Motivation Corner -->
+  <section class="motivation-corner">
+    <h3>💡 Teaching Tip</h3>
+    <p id="tipText"></p>
+  </section>
+
+  <script src="teacherdashboard.js"></script>
+</body>
+</html>
