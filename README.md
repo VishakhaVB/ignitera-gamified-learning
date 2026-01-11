@@ -3,7 +3,7 @@
 **Ignitera** is a fully interactive web-based learning platform designed for students and teachers.  
 It combines education, gamification, and progress tracking to create a fun and engaging learning experience.
 
-🌐 **Live Demo:** [Click here to view Ignitera]()
+🌐 **Live Demo:** [Click here to view Ignitera](https://ignitera-gamified-learning.netlify.app/)
 
 ---
 
